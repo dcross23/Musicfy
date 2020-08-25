@@ -14,64 +14,84 @@ import java.util.List;
  * @author David
  */
 public class Artist implements Serializable {
-    private String nombre;
-    private String biografia;
+    /**
+     * Artist name.
+     */
+    private String name;
+    
+    /**
+     * Biography of the artist.
+     */
+    private String biography;
+    
+    /**
+     * Artist´s social networks.
+     */
     private String instagram;
     private String twitter;
     private String facebook;
     private String wikipedia;
-    private List<String> albumes;
-    
-    /* Constructors */
     
     /**
-     * Constructor: creates new artist with all given parameters
-     * @param nombre
-     * @param biografia
+     * Artist albums.
+     */
+    private List<String> albums;
+    
+    
+    /*======================================================*/
+    /*                   CONSTRUCTORS                       */
+    /*======================================================*/
+    
+    /**
+     * Constructor: creates new artist with all given parameters.
+     * @param name
+     * @param biography
      * @param instagram
      * @param twitter
      * @param facebook
      * @param wikipedia
-     * @param albumes 
+     * @param albums 
      */
-    public Artist(String nombre, String biografia, String instagram, String twitter, String facebook, String wikipedia, List<String> albumes){
-        this.nombre = nombre;
-        this.biografia = biografia;
+    public Artist(String name, String biography, String instagram, String twitter, String facebook, String wikipedia, List<String> albums){
+        this.name = name;
+        this.biography = biography;
         this.instagram = instagram;
         this.twitter = twitter;
         this.facebook = facebook;
         this.wikipedia = wikipedia;
-        this.albumes = albumes;
+        this.albums = albums;
     }
 
     /**
-     * Constructor: creates new artist with just only name and his/her albums
-     * @param nombre
-     * @param albumes 
+     * Constructor: creates new artist with just only name and his/her albums.
+     * @param name
+     * @param albums 
      */
-    public Artist(String nombre,List<String> albumes){
-        this.nombre = nombre;
-        this.biografia = "";
+    public Artist(String name,List<String> albums){
+        this.name = name;
+        this.biography = "";
         this.instagram = "";
         this.twitter = "";
         this.facebook = "";
         this.wikipedia = "";
-        this.albumes = albumes;
+        this.albums = albums;
     }
     
     
-    /* Getters and setters */
-    public String getNombre() {
-        return nombre;
+    /*======================================================*/
+    /*                GETTERS AND SETTERS                   */
+    /*======================================================*/
+    public String getName() {
+        return name;
     }
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
-    public String getBiografia() {
-        return biografia;
+    public String getBiography() {
+        return biography;
     }
-    public void setBiografia(String biografia) {
-        this.biografia = biografia;
+    public void setBiography(String biography) {
+        this.biography = biography;
     }
     public String getInstagram() {
         return instagram;
@@ -97,17 +117,20 @@ public class Artist implements Serializable {
     public void setWikipedia(String wikipedia) {
         this.wikipedia = wikipedia;
     }
-    public List<String> getAlbumes() {
-        return albumes;
+    public List<String> getAlbums() {
+        return albums;
     }
-    public void setAlbumes(List<String> albumes) {
-        this.albumes = albumes;
+    public void setAlbums(List<String> albums) {
+        this.albums = albums;
     }
     
     
-    /* Methods */
+    /*======================================================*/
+    /*                      METHODS                         */
+    /*======================================================*/
+    
     /**
-     * Creates an Artist from a given delimited String (# and ; delimiters)
+     * Creates an Artist from a given delimited String (# and ; delimiters).
      * @param artist
      * @return 
      */

@@ -16,7 +16,7 @@ import view.View;
 public class Main implements Serializable {
 
     final static String binaryMusicfyFolder = "musicfy"+File.separator+"binarios";
-    final static String textFilesFolder = "musicfy"+File.separator+"datos";
+    final static String textFilesFolder = "musicfy"+File.separator+"datos";   
     
     
     /**
@@ -32,12 +32,31 @@ public class Main implements Serializable {
                 System.err.println("[INFO] Can not load text files");
                 System.exit(1);
                 
-            }else System.out.println("[INFO] Text files loaded");
+            }else 
+                System.out.println("[INFO] Text files loaded");
             
-        }else System.out.println("[INFO] Binary file loaded");
+        }else 
+            System.out.println("[INFO] Binary file loaded");
         
-        if(v.saveMusicfy(binaryMusicfyFolder)) System.out.println("[INFO] Musicfy saved succesfully");
-        else                                   System.err.println("[INFO] Can not save Musicfy");    
+        
+        v.runMenu("\n==========================="
+                + "\n          MUSICFY"
+                + "\n==========================="
+                + "\n1.Generación aleatoria"
+                + "\n2.Archivos"
+                + "\n3.Álbum"
+                + "\n4.Artista"
+                + "\n5.PlayList"
+                + "\n6.Canciones"
+                + "\ns.Salir"
+                + "\n==========================="); 
+        
+
+        
+        if(v.saveMusicfy(binaryMusicfyFolder)) 
+            System.out.println("[INFO] Musicfy saved succesfully");
+        else                                   
+            System.err.println("[INFO] Can not save Musicfy");    
         
     }
     

@@ -13,25 +13,38 @@ import java.util.List;
  * @author David
  */
 public class PlayList implements Serializable {
-    private String nombre;
-    private List<Song> canciones;
+    /**
+     * PlayList name.
+     */
+    private String name;
     
-    /* Constructors */
+    /**
+     * PlayList song list.
+     */
+    private List<Song> songs;
+    
+    /*======================================================*/
+    /*                   CONSTRUCTORS                       */
+    /*======================================================*/
     
     
-    /* Getters and setters */
-    public String getNombre() {
-        return nombre;
+    /*======================================================*/
+    /*                GETTERS AND SETTERS                   */
+    /*======================================================*/
+    public String getName() {
+        return name;
     }
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
-    public List<Song> getCanciones() {
-        return canciones;
+    public List<Song> getSongs() {
+        return songs;
     }
-    public void setCanciones(List<Song> canciones) {
-        this.canciones = canciones;
+    public void setSongs(List<Song> songs) {
+        this.songs = songs;
     }
-    
    
+    /*======================================================*/
+    /*                      METHODS                         */
+    /*======================================================*/
 }

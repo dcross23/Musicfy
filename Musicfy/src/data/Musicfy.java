@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -17,37 +18,49 @@ import java.util.List;
  * @author David
  */
 public class Musicfy implements Serializable {
-    private List<Song> canciones;
-    private List<Album> albumes;
-    private List<Artist> artistas;
+    /**
+     * Lists of songs, albums, artists and playlists the application will save.
+     */
+    private List<Song> songs;
+    private List<Album> albums;
+    private List<Artist> artists;
     private List<PlayList> playLists;
     
-    /* Constructors */
+    /*======================================================*/
+    /*                   CONSTRUCTORS                       */
+    /*======================================================*/
+    
+    /**
+     * Constructor: initializes Musicfy in case it can´t be loaded from binary file.
+     */
     public Musicfy(){
-        this.canciones = new ArrayList<>();
-        this.albumes = new ArrayList<>();
-        this.artistas = new ArrayList<>();
+        this.songs = new ArrayList<>();
+        this.albums = new ArrayList<>();
+        this.artists = new ArrayList<>();
         this.playLists = new ArrayList<>();
     }
     
-    /* Getters and setters */
-    public List<Song> getCanciones() {
-        return canciones;
+    /*======================================================*/
+    /*                GETTERS AND SETTERS                   */
+    /*======================================================*/
+    
+    public List<Song> getSongs() {
+        return songs;
     }
-    public void setCanciones(List<Song> canciones) {
-        this.canciones = canciones;
+    public void setSongs(List<Song> songs) {
+        this.songs = songs;
     }
-    public List<Album> getAlbumes() {
-        return albumes;
+    public List<Album> getAlbums() {
+        return albums;
     }
-    public void setAlbumes(List<Album> albumes) {
-        this.albumes = albumes;
+    public void setAlbums(List<Album> albums) {
+        this.albums = albums;
     }
-    public List<Artist> getArtistas() {
-        return artistas;
+    public List<Artist> getArtists() {
+        return artists;
     }
-    public void setArtistas(List<Artist> artistas) {
-        this.artistas = artistas;
+    public void setArtists(List<Artist> artists) {
+        this.artists = artists;
     }
     public List<PlayList> getPlayLists() {
         return playLists;
@@ -57,35 +70,41 @@ public class Musicfy implements Serializable {
     }
     
     
-    /* Methods */
+    /*======================================================*/
+    /*                      METHODS                         */
+    /*======================================================*/
+    
+    
+    /*=================================================================================*/
+    /*                                IMPORT TEXT FILES                                */
+    /*=================================================================================*/
     
     /**
-     * Imports all text files from the data folder called musicfy
+     * Imports all text files from the data folder called musicfy.
      * @param location
      * @return true if text files are loaded successfully 
      */
     public boolean importTextFiles(String location){
         return ( this.importAlbumTextFile(location) && this.importArtistTextFile(location) );
     }
-    
-    
+        
     /**
-     * Imports album text file from the data folder called musicfy
+     * Imports album text file from the data folder called musicfy.
      * @param location
      * @return true if album text file is loaded successfully 
      */
     private boolean importAlbumTextFile(String location){
         File albumFile = new File(location + File.separator + "albumes.txt");
-         List<String> albumesImportados;
+         List<String> importedAlbums;
         if(!albumFile.exists()){ 
             return false;
             
         }else{
             try{
-                albumesImportados = Files.readAllLines(albumFile.toPath());
+                importedAlbums = Files.readAllLines(albumFile.toPath());
                 
             }catch(IOException e){
-                albumesImportados=null;
+                importedAlbums=null;
 
                 System.err.println("ERROR: no se han podido importar los artistas : artistas.txt");
                 System.err.println("Exception:"+e);
@@ -93,13 +112,13 @@ public class Musicfy implements Serializable {
             }
         }
         
-        if(albumesImportados != null){
-            for(String s: albumesImportados){
+        if(importedAlbums != null){
+            for(String s: importedAlbums){
                 if(s != null){
                     Album newAlbum = Album.instanceFromString(s);
                     if(newAlbum != null){
-                       this.albumes.add(newAlbum);
-                       this.canciones.addAll(newAlbum.getCanciones());
+                       this.albums.add(newAlbum);
+                       this.songs.addAll(newAlbum.getSongs());
                     }                     
                 }
             }
@@ -109,23 +128,23 @@ public class Musicfy implements Serializable {
     }
     
     /**
-     * Imports artist text file from the data folder called musicfy
+     * Imports artist text file from the data folder called musicfy.
      * @param location
      * @return true if artist text file is loaded successfully 
      */
     private boolean importArtistTextFile(String location){
         File artistFile = new File(location + File.separator + "artistas.txt");
         
-        List<String> artistasImportados;
+        List<String> importedArtists;
         if(!artistFile.exists()){ 
             return false;
             
         }else{
             try{
-                artistasImportados = Files.readAllLines(artistFile.toPath());
+                importedArtists = Files.readAllLines(artistFile.toPath());
                 
             }catch(IOException e){
-                artistasImportados=null;
+                importedArtists=null;
 
                 System.err.println("ERROR: no se han podido importar los artistas : artistas.txt");
                 System.err.println("Exception:"+e);
@@ -133,18 +152,33 @@ public class Musicfy implements Serializable {
             }
         }
         
-        if(artistasImportados != null){
-            for(String s: artistasImportados){
+        if(importedArtists != null){
+            for(String s: importedArtists){
                 if(s != null){
                     Artist newArtist = Artist.instanceFromString(s);
                     
                     if(newArtist != null)
-                        this.artistas.add(newArtist);
+                        this.artists.add(newArtist);
                 }
             }
         }   
         return true;
     }
     
+    
+    /*=================================================================================*/
+    /*                                  SONGS OPTION                                   */
+    /*=================================================================================*/
+    
+    /**
+     * Returns a copy of the song´s list, sorted using a comparator. 
+     * @param c - Comparator used to sort the list
+     * @return  - Returns a new sorted array list with all songs
+     */
+    public List<Song> sortSongs(Comparator c){
+        List<Song> sortedSongs = new ArrayList<>(this.songs);
+        sortedSongs.sort(c);
+        return sortedSongs;
+    }
     
 }

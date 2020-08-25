@@ -15,72 +15,119 @@ import java.util.List;
  * @author David
  */
 public class Album implements Serializable{
-    private String titulo;
-    private List<String> interpretes;
-    private int anio;
-    private String duracion;
-    private int numCanciones;
-    private String tipo;
-    private List<Song> canciones;
-    
-    /* Constructors */
-    public Album(String titulo, List<String> interpretes, int anio, String duracion, int numCanciones, String tipo, List<Song> canciones) {
-        this.titulo = titulo;
-        this.interpretes = interpretes;
-        this.anio = anio;
-        this.duracion = duracion;
-        this.numCanciones = numCanciones;
-        this.tipo = tipo;
-        this.canciones = canciones;
-    }
-    
-    /* Getters and setters */
-    public String getTitulo() {
-        return titulo;
-    }
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-    public List<String> getInterpretes() {
-        return interpretes;
-    }
-    public void setInterpretes(List<String> interpretes) {
-        this.interpretes = interpretes;
-    }
-    public int getAnio() {
-        return anio;
-    }
-    public void setAnio(int anio) {
-        this.anio = anio;
-    }
-    public String getDuracion() {
-        return duracion;
-    }
-    public void setDuracion(String duracion) {
-        this.duracion = duracion;
-    }
-    public int getNumCanciones() {
-        return numCanciones;
-    }
-    public void setNumCanciones(int numCanciones) {
-        this.numCanciones = numCanciones;
-    }
-    public String getTipo() {
-        return tipo;
-    }
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-    public List<Song> getCanciones() {
-        return canciones;
-    }
-    public void setCanciones(List<Song> canciones) {
-        this.canciones = canciones;
-    }
-    
-    /* Methods */
     /**
-     * Creates an Album from a given delimited String (\t and ; delimiters)
+     * Album title-
+     */
+    private String title;
+    
+    /**
+     * Album artists.
+     */
+    private List<String> interpreters;
+    
+    /**
+     * Year when the album was released.
+     */
+    private int year;
+    
+    /**
+     * Album duration.
+     */
+    private String duration;
+    
+    /**
+     * Number of songs the album contains.
+     */
+    private int numSongs;
+    
+    /**
+     * Album type.
+     */
+    private String type;
+    
+    /**
+     * Album song list.
+     */
+    private List<Song> songs;
+    
+    /*======================================================*/
+    /*                   CONSTRUCTORS                       */
+    /*======================================================*/
+    
+    /**
+     * Constructor: creates new album with all given parameters.
+     * @param title
+     * @param interpreters
+     * @param year
+     * @param duration
+     * @param numSongs
+     * @param type
+     * @param songs 
+     */
+    public Album(String title, List<String> interpreters, int year, String duration, int numSongs, String type, List<Song> songs) {
+        this.title = title;
+        this.interpreters = interpreters;
+        this.year = year;
+        this.duration = duration;
+        this.numSongs = numSongs;
+        this.type = type;
+        this.songs = songs;
+    }
+    
+    
+    /*======================================================*/
+    /*                GETTERS AND SETTERS                   */
+    /*======================================================*/
+    public String getTitle() {
+        return title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public List<String> getInterpreters() {
+        return interpreters;
+    }
+    public void setInterpreters(List<String> interpreters) {
+        this.interpreters = interpreters;
+    }
+    public int getYear() {
+        return year;
+    }
+    public void setYear(int year) {
+        this.year = year;
+    }
+    public String getDuration() {
+        return duration;
+    }
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+    public int getNumSongs() {
+        return numSongs;
+    }
+    public void setNumSongs(int numSongs) {
+        this.numSongs = numSongs;
+    }
+    public String getType() {
+        return type;
+    }
+    public void setType(String type) {
+        this.type = type;
+    }
+    public List<Song> getSongs() {
+        return songs;
+    }
+    public void setSongs(List<Song> songs) {
+        this.songs = songs;
+    }
+    
+    
+    /*======================================================*/
+    /*                      METHODS                         */
+    /*======================================================*/
+    
+    /**
+     * Creates an Album from a given delimited String (\t and ; delimiters).
      * @param album
      * @return 
      */
