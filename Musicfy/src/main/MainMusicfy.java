@@ -13,11 +13,14 @@ import view.View;
  *
  * @author David
  */
-public class Main implements Serializable {
+public class MainMusicfy implements Serializable {
 
-    final static String binaryMusicfyFolder = "musicfy"+File.separator+"binarios";
-    final static String textFilesFolder = "musicfy"+File.separator+"datos";   
-    
+    /**
+     * Different paths to input/output folders.
+     */
+    public final static String binaryMusicfyFolder = "musicfy" + File.separator + "binarios";
+    public final static String textFilesFolder = "musicfy" + File.separator + "datos";   
+    public final static String exitFilesFolder = "musicfy" + File.separator + "salida";
     
     /**
      * @param args the command line arguments
@@ -26,10 +29,11 @@ public class Main implements Serializable {
         View v = new View();
         
         if(!v.loadMusicfy(binaryMusicfyFolder)){
-            System.err.println("[INFO] Can not load binary file");
+            System.err.println("[ERROR] Can not load binary file");
             
             if(!v.importTextFiles(textFilesFolder)){
-                System.err.println("[INFO] Can not load text files");
+                System.err.println("[ERROR] Can not load text files");
+                System.err.println("[ERROR] Musicfy can not be loaded");
                 System.exit(1);
                 
             }else 
@@ -56,7 +60,7 @@ public class Main implements Serializable {
         if(v.saveMusicfy(binaryMusicfyFolder)) 
             System.out.println("[INFO] Musicfy saved succesfully");
         else                                   
-            System.err.println("[INFO] Can not save Musicfy");    
+            System.err.println("[ERROR] Can not save Musicfy");    
         
     }
     

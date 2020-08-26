@@ -166,4 +166,27 @@ public class Album implements Serializable{
         return newAlbum;
     }
     
+    /**
+     * Returns a string representation of the Album representing and HTML Table Row.
+     * @return 
+     */
+    public String asHTMLTableRow(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("<TR>"+"<TD>&nbsp&nbsp%s&nbsp&nbsp</TD>"+"<TD>",this.title));
+        
+        if(this.interpreters!=null && !this.interpreters.isEmpty()){
+            for(String i : this.interpreters){
+                sb.append(String.format("&nbsp&nbsp%s&nbsp&nbsp<br/>", i));
+            }
+            
+        }else{
+            sb.append(" ");
+        }
+        
+        sb.append(String.format("</TD>"+"<TD>&nbsp&nbsp%d&nbsp&nbsp</TD>" + "<TD>&nbsp&nbsp%s&nbsp&nbsp</TD>" + "<TD>&nbsp&nbsp%d&nbsp&nbsp</TD>" 
+                         + "<TD>&nbsp&nbsp%s&nbsp&nbsp</TD>"+ "</TR>", 
+                            this.year,  this.duration, this.numSongs,this.type));
+          
+        return sb.toString(); 
+    }
 }

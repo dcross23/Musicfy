@@ -159,5 +159,25 @@ public class Artist implements Serializable {
         return newArtist;
     }
     
-    
+    /**
+     * Returns a column format string representation of the Artist. 
+     * @return 
+     */
+    public String toColString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%-30s%-300s%-25s%-25s%-25s%-50s",this.name,this.biography,this.instagram,this.twitter,this.facebook,this.wikipedia));
+        
+        if(this.albums != null){
+            for(String a: this.albums){
+                sb.append(String.format("%-20s",a));
+            }
+            
+        }else{
+            sb.append(String.format("%-20s"," "));
+        }
+        
+        sb.append("\n");
+        
+        return sb.toString(); 
+    }
 }

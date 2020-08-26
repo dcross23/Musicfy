@@ -14,6 +14,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -122,7 +123,70 @@ public class Controller implements Serializable{
         return m.importTextFiles(location);
     }
  
+    /*=================================================================================*/
+    /*                                 ARCHIVES OPTION                                 */
+    /*=================================================================================*/
+    /**
+     * Exports artists as a column format document, where each "line" represents an artist.
+     * Each artist is represented as a formated string with specific length, differentiating
+     * each other with "\n" (new line).
+     * @param location
+     * @throws FileNotFoundException - In case the file can not be created by the PrintWriter
+     */
+    public void exportArtistsColumnFormat(String location) throws FileNotFoundException{
+        m.exportArtistsColumnFormat(location);
+    }
     
+    /**
+     * Exports albums as a HTML table, where each row represents an album.
+     * @param location
+     * @throws FileNotFoundException - In case the file can not be created by the PrintWriter
+     */
+    public void exportAlbumsHTMLTable(String location) throws FileNotFoundException{
+        m.exportAlbumsHTMLTable(location);
+    }
+    
+    
+    /*=================================================================================*/
+    /*                                 PLAYLIST OPTION                                 */
+    /*=================================================================================*/
+    /**
+     * Adds a new PlayList.
+     * @param p - PlayList to add
+     * @return - True if the playlist was added correctly
+     */
+    public boolean registerPlayList(PlayList p){
+        return m.registerPlayList(p);
+    }
+    
+    /**
+     * Removes a registered playlist
+     * @param p - PlayList to be removed
+     * @return - true if it was removed successfully
+     */
+    public boolean removePlayList(PlayList p){
+        return m.removePlayList(p);
+    }
+    
+    /**
+     * Removes the song "s" from the playList number "playListIndex".
+     * @param playListIndex - Index of the playlist
+     * @param s - Song that will be removed
+     * @return - true if it was removed successfully
+     */
+    public boolean removeSong(int playListIndex, Song s){
+        return m.removeSong(playListIndex, s);
+    }
+    
+    /**
+     * Adds the song "s" to the playList number "playListIndex".
+     * @param playListIndex - Index of the playlist
+     * @param s - Song that will be removed
+     * @return - true if it was added successfully
+     */
+    public boolean addSong(int playListIndex, Song s){
+        return m.addSong(playListIndex, s);
+    }
     
     /*=================================================================================*/
     /*                                  SONGS OPTION                                   */
@@ -146,22 +210,22 @@ public class Controller implements Serializable{
     /*======================================================*/
     /*                GETTERS AND SETTERS                   */
     /*======================================================*/
-    public List<Song> getCanciones() {
+    public List<Song> getSongs() {
         return m.getSongs();
     }
-    public void setCanciones(List<Song> canciones) {
+    public void setSongs(List<Song> canciones) {
         m.setSongs(canciones);
     }
-    public List<Album> getAlbumes() {
+    public List<Album> getAlbums() {
         return m.getAlbums();
     }
-    public void setAlbumes(List<Album> albumes) {
+    public void setAlbums(List<Album> albumes) {
         m.setAlbums(albumes);
     }
-    public List<Artist> getArtistas() {
+    public List<Artist> getArtists() {
         return m.getArtists();
     }
-    public void setArtistas(List<Artist> artistas) {
+    public void setArtists(List<Artist> artistas) {
         m.setArtists(artistas);
     }
     public List<PlayList> getPlayLists() {
