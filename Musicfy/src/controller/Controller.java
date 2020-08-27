@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package controller;
 
 import data.Album;
@@ -146,6 +141,44 @@ public class Controller implements Serializable{
         m.exportAlbumsHTMLTable(location);
     }
     
+    /*=================================================================================*/
+    /*                                   ALBUM OPTION                                  */
+    /*=================================================================================*/
+    /**
+     * Adds a new Album.
+     * @param a - Album to add
+     * @return - True if the Album was added successfully
+     */
+    public boolean registerAlbum(Album a){
+        return m.registerAlbum(a);
+    }
+    
+    /**
+     * Removes a registered Album.
+     * @param album - Album to be removed
+     * @return - true if it is removed successfully
+     */
+    public boolean removeAlbum(Album album){
+        return m.removeAlbum(album);
+    }
+    
+    /**
+     * Modifies an Album.
+     * @param album - Album to modify
+     * @return - Modified Album
+     */
+    public Album modifyAlbum(Album album){
+        return m.modifyAlbum(album);
+    }
+    
+    /**
+     * Returns a list with the Albums with the title "title" to be displayed.
+     * @param title - Title of the album to be searched
+     * @return - List of Albums with that title
+     */
+    public List<Album> checkAlbum(String title){
+        return m.checkAlbum(title);
+    }
     
     /*=================================================================================*/
     /*                                 PLAYLIST OPTION                                 */
@@ -153,7 +186,7 @@ public class Controller implements Serializable{
     /**
      * Adds a new PlayList.
      * @param p - PlayList to add
-     * @return - True if the playlist was added correctly
+     * @return - True if the playlist was added successfully
      */
     public boolean registerPlayList(PlayList p){
         return m.registerPlayList(p);

@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package data;
 
+import com.coti.tools.Esdia;
 import java.io.Serializable;
 import java.util.List;
 
@@ -96,7 +92,34 @@ public class Song implements Serializable {
     /*======================================================*/
     /*                      METHODS                         */
     /*======================================================*/
-
+    /**
+     * Creates a Song by asking the user for the data.
+     * @param interp - List of the song interpreters
+     * @return The new Song or null if there is an error
+     */
+    public static Song createNewSong(List<String> interp){
+        Song song;
+        try{
+            String t = Esdia.readString_ne("\nIntroduzca el titulo de la cancion:");
+            int a = Esdia.readInt("\nIntroduzca el año de la cancion:",1,Integer.MAX_VALUE); 
+            
+            System.out.println("\nIntroduzca la duración de la cancion:");
+            int min = Esdia.readInt("Introduzca los minutos:",0,59);
+            int seg = Esdia.readInt("Introduzca los segundos:",0,59);      
+            String d =min+" min "+seg+" seg";
+            
+            song = new Song(t,a,d,interp);
+            
+        }catch(Exception e){
+            song = null;
+            System.err.println("[ERROR] No se ha podido crear la cancion");
+            System.err.println("Exception:"+e);
+        }
+        
+        return song;
+    }
+    
+    
     /**
      * Returns a string representation of the Song.
      * @return  String representing the song

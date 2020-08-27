@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
 import com.coti.tools.Esdia;
 import controller.Controller;
+import data.Album;
 import data.PlayList;
 import data.Song;
 import java.io.FileNotFoundException;
@@ -81,13 +77,13 @@ public class View implements Serializable {
                 
                 case "2": archivesOption(); break;
                  
-                case "3":  break;
+                case "3": albumOption();    break;
                 
                 case "4":  break;
                 
                 case "5": playListOption(); break;
                 
-                case "6": songsOption(); break;
+                case "6": songsOption();    break;
                 
                 case "s": exit = Esdia.yesOrNo("¿Seguro que quiere salir del programa?");
                           break;
@@ -146,6 +142,244 @@ public class View implements Serializable {
     } 
     
     
+    
+    /*=================    ARCHIVES OPTION     ==================*/
+    /**
+     * New menu that gives several options to work with Albums.
+     */
+    private void albumOption(){
+        System.out.println("\nHas elegido la opcion Album");
+        System.out.println("\n=========================================="
+                         + "\n                 ALBUM"
+                         + "\n=========================================="
+                         + "\n1)Altas"
+                         + "\n2)Bajas"
+                         + "\n3)Modificaciones"
+                         + "\n4)Consulta"
+                         + "\n5)Volver"
+                         + "\n==========================================");
+
+        String[] options = {"1","2","3","4","5"};
+        String opc = Esdia.readString("Introduzca una opción", options);
+        switch(opc){
+            case "1": this.addAlbum(); break;
+
+            case "2": this.removeAlbum(); break;
+
+            case "3": this.modifyAlbum(); break;
+            
+            case "4": this.checkAlbum(); break;
+            
+            case "5": break;
+        }
+    }
+    
+    /**
+     * Adds a new Album with the data given by the user.
+     */
+    private void addAlbum(){
+        Album a = Album.createNewAlbum();
+        if(controller.registerAlbum(a))
+            System.out.println("\nEl álbum se ha registrado correctamente\n");
+        else
+            System.out.println("\nNo se ha podido registrar el álbum\n");
+    }
+    
+    /**
+     * Removes an Album from the registered Album list.
+     */
+    private void removeAlbum(){
+        if(this.printAlbums()){
+            String title = Esdia.readString_ne("Introduzca el nombre del álbum a eliminar:"); 
+            List<Album> findedAlbums = new ArrayList<>();
+            for(Album a: controller.getAlbums()){
+                if(title.compareTo(a.getTitle())==0){
+                    findedAlbums.add(a);
+                }
+            }
+            
+            if(findedAlbums.isEmpty()){
+                System.out.println("\nEl álbum introducido no existe");
+            
+            }else if(findedAlbums.size() == 1){
+                if(controller.removeAlbum(findedAlbums.get(0)))
+                    System.out.println("\nEl album se ha eliminado correctamente\n");
+                else
+                    System.out.println("\nNo ha sido posible eliminar el album\n");
+            
+            }else{
+                System.out.println("\n====================================================================================================================================================================================================================================================================");
+                System.out.printf("%-40s | %-40s | %-5s | %-15s | %-13s | %-10s | %s","TITULO ALBUM","INTERPRETES ALBUM","AÑO","DURACION","Nº CANCIONES","TIPO","CANCIONES ALBUM");
+                System.out.println("\n====================================================================================================================================================================================================================================================================");
+                int i=1;
+                for(Album a: findedAlbums){
+                    System.out.println(i+")");
+                    System.out.println(a.toString());
+                    if(i<findedAlbums.size())
+                        System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+                    i++;
+                }     
+                System.out.println("====================================================================================================================================================================================================================================================================");
+            
+                System.out.println("\nSe encontraron varios albumes con el mismo nombre");
+                int albumIndex = Esdia.readInt("\n¿Qué album quiere borrar?",1,findedAlbums.size()+1)-1;
+                if(albumIndex < findedAlbums.size()){
+                    if(controller.removeAlbum(findedAlbums.get(albumIndex)))
+                        System.out.println("\nEl album se ha eliminado correctamente\n");
+                    else
+                        System.out.println("\nNo ha sido posible eliminar el album\n");
+                }
+            }
+            
+        }
+    }
+    
+    /**
+     * Modifies an Album from the registered Album list.
+     */
+    private void modifyAlbum(){
+        if(this.printAlbums()){
+            String tit = Esdia.readString_ne("Introduzca el nombre del álbum a modificar:");
+            
+            List<Album> allAlbums = controller.getAlbums();
+            if(allAlbums!=null){
+                if(!allAlbums.isEmpty()){
+                    List<Album> albumesEncontrados = new ArrayList<>();
+                    List<Integer> posiciones = new ArrayList<>();
+
+                    int pos = 0;
+                    for(Album a: allAlbums){
+                        if(tit.compareTo(a.getTitle())==0){
+                            albumesEncontrados.add(a);
+                            posiciones.add(pos);
+                        }
+                        pos++;
+                    }
+
+                    if(albumesEncontrados.isEmpty()){
+                        System.out.println("\nEl álbum introducido no existe");
+
+                    }else if(albumesEncontrados.size() == 1){
+                        Album a = controller.modifyAlbum(albumesEncontrados.get(0));
+                        if(a!=null){
+                            System.out.println("\nEl album se ha modificado correctamente\n");
+                            allAlbums.set(posiciones.get(0), a);
+                            
+                        }else
+                            System.out.println("\nNo ha sido posible modificar el album\n");
+
+                    }else{
+                        System.out.println("\n====================================================================================================================================================================================================================================================================");
+                        System.out.printf("%-40s | %-40s | %-5s | %-15s | %-13s | %-10s | %s","TITULO ALBUM","INTERPRETES ALBUM","AÑO","DURACION","Nº CANCIONES","TIPO","CANCIONES ALBUM");
+                        System.out.println("\n====================================================================================================================================================================================================================================================================");
+                        int i=1;
+                        for(Album a: albumesEncontrados){
+                            System.out.println(i+")");
+                            System.out.println(a.toString());
+                            if(i<albumesEncontrados.size())
+                                System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+                            i++;
+                        }     
+                        System.out.println("====================================================================================================================================================================================================================================================================");
+
+                        System.out.println("\nSe encontraron varios albumes con el mismo nombre");
+                        int albumIndex = Esdia.readInt("\n¿Qué album quiere modificar?",1,albumesEncontrados.size());
+
+                        Album a = controller.modifyAlbum( albumesEncontrados.get(albumIndex - 1) );
+                        if(a!=null){
+                            System.out.println("\nEl album se ha modificado correctamente\n");
+                            allAlbums.set(posiciones.get(albumIndex - 1), a);
+                            controller.setAlbums(allAlbums);
+                            
+                        }else
+                            System.out.println("\nNo ha sido posible modificar el album\n");
+                    }
+
+                }else{
+                    System.out.println("\nNo hay albumes registrados");
+                }
+            }else{
+                System.out.println("\nNo se han podido obtener los Albums");
+            }
+            
+        }
+    }
+    
+    /**
+     * Prints one selected Album from the general registered Album list.
+     */
+    private void checkAlbum(){
+        System.out.println("\n=========================================");
+        System.out.println("\tALBUMES DISPONIBLES");
+        System.out.println("=========================================");
+        
+        List<Album> allAlbums = new ArrayList<>(controller.getAlbums());
+        if(!allAlbums.isEmpty()){
+            allAlbums.sort(Comparator.comparing(Album::getTitle));
+            for(Album a : allAlbums){
+                System.out.println("  "+a.getTitle());
+            }
+            System.out.println("=========================================");
+            
+            String tit = Esdia.readString_ne("\nIntroduzca el nombre del álbum a mostrar:");    
+            List<Album> al = controller.checkAlbum(tit);
+            if(al != null && !al.isEmpty()){
+                System.out.println("\n====================================================================================================================================================================================================================================================================");
+                System.out.printf("%-40s | %-40s | %-5s | %-15s | %-13s | %-10s | %s","TITULO ALBUM","INTERPRETES ALBUM","AÑO","DURACION","Nº CANCIONES","TIPO","CANCIONES ALBUM");
+                System.out.println("\n====================================================================================================================================================================================================================================================================");
+                int i=1;
+                for(Album a: al){
+                    System.out.println(a.toString());
+                    if(i<al.size())
+                        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+                    i++;
+                } 
+                    
+                System.out.println("====================================================================================================================================================================================================================================================================");
+                
+            }else{
+                System.out.println("\nNo se ha encontrado ningún álbum con ese nombre\n");
+               
+            }    
+        
+        }else
+            System.out.println("\nNo hay albumes registrados");
+    }
+    
+    /**
+     * Prints all registered Albums
+     * @return - true if there is no error
+     */
+    private boolean printAlbums(){
+        List<Album> al = controller.getAlbums();
+        if(al!=null){
+            System.out.println("\n===============================================================================================================================================================================================================================================");
+            System.out.printf("%-40s | %-40s | %-5s | %-15s | %-13s | %-10s | %s","TITULO ALBUM","INTERPRETES ALBUM","AÑO","DURACION","Nº CANCIONES","TIPO","CANCIONES ALBUM");
+            System.out.println("\n===============================================================================================================================================================================================================================================");
+            
+            int i=1;
+            if(!al.isEmpty()){
+                for(Album a: al){
+                    if(a!=null){
+                        System.out.println(a.toString());
+                        if(i < al.size())
+                            System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+                    }
+                    i++;
+                }     
+                System.out.println("\n===============================================================================================================================================================================================================================================");
+                
+            }else{
+                System.out.println("\nNo hay Albums registrados");
+            }
+            return true;
+        }else{
+            System.out.println("\nNo se han podido obtener los Albums");
+            return false;
+        }
+    }
+    
+    
     /*=================    PLAYLIST OPTION     ==================*/
     /**
      * New menu that gives several options to work with PlayLists.
@@ -162,9 +396,8 @@ public class View implements Serializable {
                          + "\n5)Volver"
                          + "\n==========================================");
                 
-        String opc;
         String[] opciones = {"1","2","3","4","5"};
-        opc = Esdia.readString("Introduzca una opción", opciones);
+        String opc = Esdia.readString("Introduzca una opción", opciones);
         switch(opc){
             case "1": this.addPlayList(); break;
             
@@ -368,9 +601,9 @@ public class View implements Serializable {
     private int printPlayLists(){
         List<PlayList> pl = controller.getPlayLists();
         if(pl != null){
-            System.out.println("\n====================================================================================================================================================================================================================================================================");
+            System.out.println("\n===============================================================================================================================================================================================================================================");
             System.out.printf("%s| %-30s| %-41s%-7s%-15s%s","Nº","TITULO PLAYLIST","TITULOS CANCIONES","AÑO","DURACION","INTERPRETES");
-            System.out.println("\n====================================================================================================================================================================================================================================================================");
+            System.out.println("\n===============================================================================================================================================================================================================================================");            
             
             int i=1;
             if(!pl.isEmpty()){
@@ -381,10 +614,10 @@ public class View implements Serializable {
                         System.out.println("  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
                     i++;
                 }
-                System.out.println("====================================================================================================================================================================================================================================================================");
-            
+                System.out.println("\n===============================================================================================================================================================================================================================================");
+           
             }else{
-                System.out.println("\nNo hay playlists registradas");
+                System.out.println("\nNo hay PlayLists registradas");
             }
             
             return i;

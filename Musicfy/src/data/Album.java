@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package data;
 
+import com.coti.tools.Esdia;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -129,7 +125,7 @@ public class Album implements Serializable{
     /**
      * Creates an Album from a given delimited String (\t and ; delimiters).
      * @param album
-     * @return 
+     * @return The new Album or null if there is an error
      */
     public static Album instanceFromString(String album){
         String[] data = album.split("\t");
@@ -166,6 +162,96 @@ public class Album implements Serializable{
         return newAlbum;
     }
     
+    
+    /**
+     * Creates an Album asking the user for the data.
+     * @return The new Album or null if there is an error
+     */
+    public static Album createNewAlbum(){
+        Album album;
+        try{
+            String t = Esdia.readString_ne("\n\nIntroduzca el titulo del album:");
+
+            List<String> in = new ArrayList<>();  
+            boolean seguir = false;
+            do{
+                String i = Esdia.readString_ne("\nIntroduzca el nombre del artista(- para continuar):");
+                if(i.compareTo("-") == 0) 
+                    seguir = true;
+                else
+                    in.add(i);
+            }while(!seguir);
+
+            int a = Esdia.readInt("\nIntroduzca el año del album:",1,Integer.MAX_VALUE);
+            
+            int nc = Esdia.readInt("\nIntroduzca el numero de canciones del album:",1,Integer.MAX_VALUE);
+                    
+            String tipo;
+            if(nc == 1) tipo="sencillo";
+            else        tipo="álbum";
+            
+            List<Song> songs = new ArrayList<>();
+            String[] songDur;
+            int albMin = 0, albSeg = 0;
+            for(int i=0; i<nc; i++){
+                Song song = Song.createNewSong(in);
+                if(song != null) songs.add(song);
+            
+                //To calculate album total duration from the duration of the songs
+                songDur = song.getDuration().split(" ");
+                int songMin = Integer.parseInt(songDur[0]);
+                int songSeg = Integer.parseInt(songDur[2]);
+                albMin += songMin;
+                albSeg += songSeg;
+            }
+            
+            if(albSeg > 59){
+                albMin += (albSeg/60);
+                albSeg = albSeg % 60;
+            }
+            
+            String d = albMin + " min " + albSeg + " seg";   
+            
+            album = new Album(t,in,a,d,nc,tipo,songs);
+            
+        }catch(Exception e){
+            album = null;
+            System.err.println("[ERROR] No se ha podido crear la instancia de Album: ");
+            System.err.println("Exception:"+e);
+        }
+        
+        return album;
+    }
+    
+    
+    /**
+     * Creates an Album by modifying another album given by the user.
+     * @param album - Album to modify
+     * @return The new Album or null if there is an error
+     */
+    public static Album modifiedCopyOfAlbum(Album album){        
+        int a;
+        if(Esdia.yesOrNo("\n¿Quiere modifica el año del album?"))
+            a = Esdia.readInt("\nIntroduzca el nuevo año:",1,Integer.MAX_VALUE);  
+        else
+            a=album.getYear();
+        
+        
+        String d;
+        if(Esdia.yesOrNo("\n¿Quiere modificar la duracion del album?")){
+            System.out.println("\nIntroduzca la nueva duración:");
+            int min = Esdia.readInt("Introduzca los minutos:",0,59);
+            int seg = Esdia.readInt("Introduzca los segundos:",0,59);
+            d = min+" min "+seg+" seg";
+            
+        }else{
+            d = album.getDuration();
+        }
+        
+        return (new Album(album.getTitle(), album.getInterpreters(), a, d, album.getNumSongs(), album.getType(), album.getSongs()));
+    }
+  
+    
     /**
      * Returns a string representation of the Album representing and HTML Table Row.
      * @return 
@@ -188,5 +274,61 @@ public class Album implements Serializable{
                             this.year,  this.duration, this.numSongs,this.type));
           
         return sb.toString(); 
+    }
+
+    
+    /**
+     * Returns a string representation of the Album (including his Songs)
+     * @return 
+     */
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%-40s", this.title)).append(" | ");
+        
+        if(this.interpreters!=null && !this.interpreters.isEmpty()){
+            sb.append(String.format("%-40s", this.interpreters.get(0))).append(" | ");
+        }else{
+            sb.append(String.format("%-40s", " ")).append(" | ");
+        }
+        
+        sb.append(String.format("%-5s", this.year)).append(" | ").append(String.format("%-15s", this.duration)).append(" | ");
+        sb.append(String.format("%-13s", this.numSongs)).append(" | ").append(String.format("%-10s",this.type)).append(" | ");
+        
+        if(this.songs!=null && !this.songs.isEmpty()){
+            sb.append(String.format("%s", this.songs.get(0).toDelimitedString(","))).append("\n");
+        }else{
+            sb.append(String.format("%s", " ")).append("\n");
+        }
+        
+        int aux;
+        if(this.interpreters.size()>this.songs.size())
+            aux=this.interpreters.size();
+        else
+            aux=this.songs.size();
+        
+        for(int i=1; i<aux; i++){
+            if(i<this.interpreters.size()){
+                sb.append(String.format("%-40s", " ")).append(" | ").append(String.format("%-40s", this.interpreters.get(i))).append(" | ");
+                sb.append(String.format("%-5s", " ")).append(" | ").append(String.format("%-15s"," ")).append(" | ");
+                sb.append(String.format("%-13s", " ")).append(" | ").append(String.format("%-10s"," ")).append(" | ");
+                
+                if(i<this.songs.size())
+                    sb.append(String.format("%s\n",this.songs.get(i).toDelimitedString(",")));
+                else
+                    sb.append(String.format("%s\n"," "));
+            
+            }else{
+                sb.append(String.format("%-40s", " ")).append(" | ").append(String.format("%-40s", " ")).append(" | ");
+                sb.append(String.format("%-5s", " ")).append(" | ").append(String.format("%-15s"," ")).append(" | ");
+                sb.append(String.format("%-13s", " ")).append(" | ").append(String.format("%-10s"," ")).append(" | ");
+                
+                if(i<this.songs.size())
+                    sb.append(String.format("%s\n",this.songs.get(i).toDelimitedString(",")));
+                else
+                    sb.append(String.format("%s\n"," "));
+            }
+        }
+        return sb.toString();
     }
 }

@@ -1,19 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package data;
 
-import com.coti.tools.Rutas;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -222,6 +214,136 @@ public class Musicfy implements Serializable {
         pw.close();
     }
     
+    
+    
+    
+    /*=================================================================================*/
+    /*                                   ALBUM OPTION                                  */
+    /*=================================================================================*/
+    /**
+     * Adds a new Album.
+     * It also adds all the songs from the new Album to the general list of Songs, and it
+     * adds the album interpreters to the general list of Artists if the artist is not
+     * registered yet.
+     * @param a - Album to add
+     * @return - True if the Album was added successfully
+     */
+    public boolean registerAlbum(Album a){
+        if(a!=null){
+            Artist artista = null;
+            List<String> albumInterpreters = a.getInterpreters();
+            
+            if(albumInterpreters != null && !albumInterpreters.isEmpty()){
+                //For each artist of the album, we look if it is or not already in the list
+                // and we add to the list if its not in it.
+                for(String i: a.getInterpreters()){
+                    if(i!=null && !i.isEmpty()){
+                        for(Artist ar: this.artists){
+                            if(i.compareTo(ar.getName()) == 0){
+                                artista = ar;
+                                break;
+                            }
+                        }
+
+                        //If the artist its not registered, it registers it with the album
+                        if(artista == null){
+                            List<String> lAlbum = new ArrayList<>();
+                            lAlbum.add(a.getTitle());
+                            this.artists.add(new Artist(i,lAlbum));
+
+                        //If the artist is already registered, it just adds the album
+                        }else{
+                            artista.getAlbums().add(a.getTitle());
+                        }
+                    }
+                }
+            }
+
+            //Adds the album
+            this.albums.add(a);
+            
+            //Adds all the album songs
+            this.songs.addAll(a.getSongs());
+            return true;
+            
+        }else
+            return false;
+    }
+    
+    /**
+     * Removes a registered Album.
+     * It removes the album from the general list of Albums, but also deletes it
+     * from the album lists of its interpreters and the album songs are also deleted
+     * from the general list of songs.
+     * @param album - Album to be removed
+     * @return - true if it is removed successfully
+     */
+    public boolean removeAlbum(Album album){
+        if(album != null && !this.albums.isEmpty() && this.albums.contains(album)){
+            //Deletes the album from the general list
+            this.albums.remove(album);
+
+            //Deletes the album from the list of albums of every artist where the album was registerd
+            // It uses indexes instead of removing the String "albName" because there can be
+            // 2 or more albums with the same name
+            int i;
+            List<String> artistAlbums;
+            for(Artist ar: this.artists){
+                artistAlbums = ar.getAlbums();
+                i=0;
+                for(String albName: artistAlbums){
+                    if(albName.compareTo(album.getTitle()) == 0){
+                        artistAlbums.remove(i);
+                        break;
+                    }
+                    i++;
+                }
+                
+            }
+
+            //Deletes the album songs from the songs general list 
+            List<Song> albSongs = album.getSongs();
+            if(album.getNumSongs() > 0 && albSongs!=null && !albSongs.isEmpty()){
+                for(Song s: albSongs){
+                    this.songs.remove(s);
+                }
+            }
+            return true;
+            
+        }else{
+            return false;
+        }
+
+    }
+    
+    /**
+     * Modifies an Album.
+     * Only alows some parameters to be modified (no title,interpreters or songs).
+     * @param album - Album to modify
+     * @return - Modified Album
+     */
+    public Album modifyAlbum(Album album){
+        return Album.modifiedCopyOfAlbum(album);
+    }
+    
+    /**
+     * Returns a list with the Albums with the title "title" to be displayed.
+     * @param title - Title of the album to be searched
+     * @return - List of Albums with that title
+     */
+    public List<Album> checkAlbum(String title){
+        if(this.albums!=null && !this.albums.isEmpty()){
+            List <Album> albumesEncontrados = new ArrayList<>();
+            for(Album a: this.albums){
+                if(title.compareTo(a.getTitle())==0){
+                    albumesEncontrados.add(a);
+                }
+            }
+            return albumesEncontrados;
+        
+        }else
+            return null;
+    }
     
     
     /*=================================================================================*/
