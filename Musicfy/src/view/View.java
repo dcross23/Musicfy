@@ -3,6 +3,7 @@ package view;
 import com.coti.tools.Esdia;
 import controller.Controller;
 import data.Album;
+import data.Artist;
 import data.PlayList;
 import data.Song;
 import java.io.FileNotFoundException;
@@ -79,7 +80,7 @@ public class View implements Serializable {
                  
                 case "3": albumOption();    break;
                 
-                case "4":  break;
+                case "4": artistOption();   break;
                 
                 case "5": playListOption(); break;
                 
@@ -143,7 +144,7 @@ public class View implements Serializable {
     
     
     
-    /*=================    ARCHIVES OPTION     ==================*/
+    /*=================     ALBUM OPTION       ==================*/
     /**
      * New menu that gives several options to work with Albums.
      */
@@ -379,6 +380,209 @@ public class View implements Serializable {
         }
     }
     
+    
+    
+    /*=================     ARTIST OPTION      ==================*/
+    /**
+     * New menu that gives several options to work with Artists.
+     */
+    private void artistOption(){
+        System.out.println("\nHas elegido la opcion Artista");
+        System.out.println("\n=========================================="
+                         + "\n                 ARTISTA"
+                         + "\n=========================================="
+                         + "\n1)Altas"
+                         + "\n2)Bajas"
+                         + "\n3)Modificaciones"
+                         + "\n4)Consultar albumes artista"
+                         + "\n5)Volver"
+                         + "\n==========================================");
+
+        String opc;
+        String[] options = {"1","2","3","4","5"};
+        opc = Esdia.readString("Introduzca una opción", options);
+        switch(opc){
+            case "1": this.addArtist(); break;
+
+            case "2": this.removeArtist(); break;
+
+            case "3": this.modifyArtist(); break;
+            
+            case "4": this.checkArtistAlbums(); break;
+            
+            case "5": break;
+        }
+    }
+    
+    /**
+     * Adds a new Artist with the data given by the user.
+     */
+    private void addArtist(){
+        Artist ar = Artist.createNewArtist();
+        if(controller.registerArtist(ar)){
+            System.out.println("\nEl artista se ha registrado correctamente\n");
+        }else
+            System.out.println("\nNo se ha podido registrar el artista\n");
+    }
+    
+    /**
+     * Removes an Artist from the registered Album list.
+     */
+    private void removeArtist(){
+        if(this.printArtists()){ 
+            String artistName = Esdia.readString_ne("\nIntroduzca el nombre del artista:");
+            
+            List<Artist> allArtists = controller.getArtists();
+            Artist art=null;
+            if(allArtists!=null && !allArtists.isEmpty()){
+                for(Artist ar: allArtists){
+                    if(artistName.compareTo(ar.getName())==0){
+                        art = ar;
+                        break;
+                    }
+                }           
+            }
+            
+            if(art != null){     
+                List<String> l = controller.removeArtist(art);
+                if(l!=null){
+                    if(l.isEmpty()){
+                        System.out.println("\nEl artista se ha eliminado correctamente\n");
+
+                    }else{
+                        System.out.println("\nNo se puede eliminar, tiene albumes registrados:");
+                        for(String s: l){
+                            System.out.println("\t"+s);
+                        }
+                    }
+                }else{
+                    System.out.println("\nNo se han podido obtener los albumes del Artista, no se pudo eliminar el Artista\n");
+                }
+            }else{
+                System.out.println("\nEl artista \""+artistName+"\" no existe\n");
+            }
+        }        
+    }
+    
+    /**
+     * Modifies an Artist from the registered Artist list.
+     */
+    private void modifyArtist(){
+        if(this.printArtists()){
+            List<Artist> allArtists = controller.getArtists();
+            if(allArtists!=null){
+                if(!allArtists.isEmpty()){
+                    String artist = Esdia.readString_ne("\nIntroduzca el nombre del artista:");
+                    //Searches for the artist and his index
+                    int artIndex=0;
+                    Artist ar = null;
+                    for(Artist a: allArtists){
+                        if(artist.compareTo(a.getName())==0){
+                            ar = a;
+                            break;
+                        }
+                        artIndex++;
+                    }
+
+                    if(ar!=null){
+                        Artist arModif = controller.modifyArtist(ar);
+                        if(arModif!=null){
+                            allArtists.set(artIndex, arModif);
+                            System.out.println("\nEl artista se ha modificado correctamente");
+                        }else
+                            System.out.println("\nNo se ha podido modificar el artista"); 
+                    
+                    }else{
+                        System.out.println("\nEl Artista \""+artist+"\" no existe");
+                    }      
+                }else{
+                    System.out.println("\nNo hay Artistas registrados");
+                }       
+            }else{
+                System.out.println("\nNo se han podido obtener los Artistas");
+            }
+        }
+    }
+    
+    /**
+     * Prints all the Albums from a given Artist.
+     */
+    private void checkArtistAlbums(){
+        if(this.printArtists()){
+            String artist = Esdia.readString_ne("\nIntroduzca el nombre del artista:");
+            Artist art=null;
+            for(Artist a: controller.getArtists()){
+                if(artist.compareTo(a.getName())==0){
+                    art = a;
+                    break;
+                }
+            } 
+            if(art != null){
+                List<Album> albumesOrdenados = controller.getSortArtistAlbumsList(art);          
+
+                if(albumesOrdenados != null){
+                    System.out.println("\n   ALBUMES DE "+artist);
+                    System.out.println("\n====================================================================================================================================================================================================================================================================");
+                    System.out.printf("  %-30s | %-5s | %-15s | %-13s | %-10s | %s","TITULO","AÑO","DURACION","Nº CANCIONES","TIPO","INTERPRETES");
+                    System.out.println("\n====================================================================================================================================================================================================================================================================");
+
+                    if(!albumesOrdenados.isEmpty()){        
+                        for(Album a: albumesOrdenados){
+                            System.out.println("  "+a.toStringNoSongs());
+                        }
+                        System.out.println("====================================================================================================================================================================================================================================================================");
+
+                    }else{
+                        System.out.println("\n\""+artist+"\" no tiene ningun álbum registrado en la lista de álbumes");
+                    }
+                }else{
+                    System.out.println("\nNo se pudo obtener los albumes del artista \""+artist+"\"");
+                }           
+            }else{
+                System.out.println("\nEl Artista \""+artist+"\" no existe");
+            }
+        }
+    }
+    
+    /**
+     * Prints all registered Artists
+     * @return - true if there is no error
+     */
+    private boolean printArtists(){
+        List<Artist> ar = controller.getArtists();
+        if(ar != null){
+            System.out.print("\n==============================================================================================================================================================================================================================");
+            System.out.print("==============================================================================================================================================================================================================================");
+            System.out.println("==============================================================================================================================================================================================================================");
+            System.out.printf("  %-30s | %-300s | %-25s | %-25s | %-25s | %-50s | %s","NOMBRE ARTISTA","BIOGRAFIA","INSTAGRAM","TWITTER","FACEBOOK","WIKIPEDIA","ALBUMES");
+            System.out.print("\n==============================================================================================================================================================================================================================");
+            System.out.print("==============================================================================================================================================================================================================================");
+            System.out.println("==============================================================================================================================================================================================================================");
+            
+            if(!ar.isEmpty()){
+                int i=1;
+                for(Artist a: ar){
+                    System.out.println("  "+a.toString());
+                    if(i<ar.size())
+                            System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- "
+                                + "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- "
+                                + " -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+                    i++;
+                }
+                System.out.print("==============================================================================================================================================================================================================================");
+                System.out.print("==============================================================================================================================================================================================================================");
+                System.out.println("==============================================================================================================================================================================================================================");
+                
+            }else{
+                System.out.println("\nNo hay Artistas registrados");
+            }        
+            return true;
+        
+        }else{
+            System.out.println("\nNo se han podido obtener los Artistas");
+            return false;
+        }
+    }
     
     /*=================    PLAYLIST OPTION     ==================*/
     /**

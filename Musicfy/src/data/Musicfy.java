@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -230,7 +231,7 @@ public class Musicfy implements Serializable {
      */
     public boolean registerAlbum(Album a){
         if(a!=null){
-            Artist artista = null;
+            Artist artist = null;
             List<String> albumInterpreters = a.getInterpreters();
             
             if(albumInterpreters != null && !albumInterpreters.isEmpty()){
@@ -240,20 +241,32 @@ public class Musicfy implements Serializable {
                     if(i!=null && !i.isEmpty()){
                         for(Artist ar: this.artists){
                             if(i.compareTo(ar.getName()) == 0){
-                                artista = ar;
+                                artist = ar;
                                 break;
                             }
                         }
 
                         //If the artist its not registered, it registers it with the album
-                        if(artista == null){
+                        if(artist == null){
                             List<String> lAlbum = new ArrayList<>();
                             lAlbum.add(a.getTitle());
                             this.artists.add(new Artist(i,lAlbum));
 
-                        //If the artist is already registered, it just adds the album
+                        //If the artist is already registered, it just adds the album (if it
+                        // wasnt already registered as an album of the artist)
                         }else{
-                            artista.getAlbums().add(a.getTitle());
+                            List<String> artAlb = artist.getAlbums();
+                            boolean add = true;
+                            if(artAlb!=null && !artAlb.isEmpty()){
+                                for(String s: artAlb){
+                                    if(s.compareTo(a.getTitle()) == 0){
+                                        add = false;
+                                        break;
+                                    }
+                                }
+                                
+                                if(add) artAlb.add(a.getTitle());           
+                            }
                         }
                     }
                 }
@@ -344,6 +357,98 @@ public class Musicfy implements Serializable {
         }else
             return null;
     }
+    
+    
+    /*=================================================================================*/
+    /*                                  ARTIST OPTION                                  */
+    /*=================================================================================*/
+    /**
+     * Adds a new Artist to the list.
+     * @param artist - Artist to add
+     * @return - true if it is added successfully
+     */
+    public boolean registerArtist(Artist artist){
+        if(artist != null){
+            this.artists.add(artist);
+            return true;
+        }else
+            return false;       
+    }
+    
+    /**
+     * Removes an Artist.
+     * It removes it only if all the artist albums are unregistered from 
+     * the general list of Albums.
+     * @param artist - Artist to remove
+     * @return - List of the artist albums that are still registered
+     */
+    public List<String> removeArtist(Artist artist){
+        if(artist!=null){
+            List<String> artAlbums = artist.getAlbums();
+            if(artAlbums!=null){
+                //If the artist album list is empty, it just deletes the artist
+                // Otherwise, it iterates through every album searching for any
+                // coincidence with any album of the general list
+                if(!artAlbums.isEmpty()){
+                    for(String albArt: artAlbums){
+                        if(albArt!=null && !albArt.isEmpty()){
+                            for(Album album : this.albums){
+                                if(albArt.compareTo(album.getTitle())==0){
+                                    return artAlbums;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                this.artists.remove(artist);
+                return (new ArrayList<>());
+            }
+        }
+        return null; 
+    }
+    
+    /**
+     * Modifies an Artist.
+     * Only alows some parameters to be modified (no name or albums).
+     * @param artist - Artist to modify
+     * @return - Modified Artist
+     */
+    public Artist modifyArtist(Artist artist){
+        return Artist.modifiedCopyOfArtist(artist);
+    }
+    
+    /**
+     * Returns the artist album list sorted by year and title
+     * @param artist - Artist to get his/her album list
+     * @return - Sorted artist album list
+     */
+    public List<Album> getSortArtistAlbumsList(Artist artist){
+        List<Album> orderedAlbums =null;
+        
+        if(artist != null){
+            orderedAlbums = new ArrayList<>();
+            for(String artAlbum: artist.getAlbums()){
+                if(!artAlbum.isEmpty()){
+                    for(Album a: this.albums){
+                        if(artAlbum.compareTo(a.getTitle())==0){
+                            orderedAlbums.add(a);
+                            break;
+                        }
+                    }
+                }else{
+                    return null;
+                }
+            }
+            
+            if(!orderedAlbums.isEmpty())
+                orderedAlbums.sort(Comparator.comparing(Album::getYear).thenComparing(Album::getTitle));
+        
+        }
+        
+        return orderedAlbums;  
+    }
+    
     
     
     /*=================================================================================*/

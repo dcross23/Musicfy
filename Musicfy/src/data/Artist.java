@@ -1,8 +1,11 @@
 package data;
 
+import com.coti.tools.Esdia;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -155,6 +158,79 @@ public class Artist implements Serializable {
     }
     
     /**
+     * Creates an Artist asking the user for the data.
+     * @return The new Artist or null if there is an error
+     */
+    public static Artist createNewArtist(){
+        Artist ar;
+        try{
+            String n = Esdia.readString_ne("\nIntroduzca el nombre del artista:");
+            String b = Esdia.readString_ne("\nIntroduzca la biografia del artista:");
+            String ins = Esdia.readString_ne("\nIntroduzca el instagram del artista:");
+            String tw = Esdia.readString_ne("\nIntroduzca el twitter del artista:");
+            String f = Esdia.readString_ne("\nIntroduzca el facebook del artista:");
+            String w = Esdia.readString_ne("\nIntroduzca la wikipedia del artista:");
+            
+            List<String> alb = new ArrayList<>();              
+            int nAlb = Esdia.readInt("\nIntroduzca el numero de albumes del artista(minimo 1)",1,Integer.MAX_VALUE);
+            for(int i=0; i<nAlb; i++){
+                String a = Esdia.readString_ne("\nIntroduzca el nombre del album:");
+                if(a != null)
+                    alb.add(a);
+            }
+                
+            ar = new Artist(n,b,ins,tw,f,w,alb);
+        }catch(Exception e){
+            ar = null;
+        }
+        return ar;
+    }
+    
+    /**
+     * Creates an Artist by modifying another album given by the user.
+     * @param artist - Artist to modify
+     * @return - The new Artist or null if there is an error
+     */
+    public static Artist modifiedCopyOfArtist(Artist artist){        
+        String bio;
+        if(Esdia.yesOrNo("\n¿Quiere modificar la biografia del artista?")){
+            bio = Esdia.readString_ne("\nIntroduzca la nueva biografía:");
+        }else{
+            bio = artist.getBiography();
+        }
+        
+        String ins;
+        if(Esdia.yesOrNo("\n¿Quiere modificar el instagram del artista?")){
+            ins = Esdia.readString_ne("\nIntroduzca el nuevo instagram:");
+        }else{
+            ins = artist.getInstagram();
+        }
+        
+        String tw;
+        if(Esdia.yesOrNo("\n¿Quiere modificar el twitter del artista?")){
+            tw = Esdia.readString_ne("\nIntroduzca el nuevo twitter:");
+        }else{
+            tw = artist.getTwitter();
+        }
+        
+        String f;
+        if(Esdia.yesOrNo("\n¿Quiere modificar el facebook del artista?")){
+            f = Esdia.readString_ne("\nIntroduzca el nuevo facebook:");
+        }else{
+            f = artist.getFacebook();
+        }
+        
+        String wiki;
+        if(Esdia.yesOrNo("\n¿Quiere modificar la wikipedia del artista?")){
+            wiki = Esdia.readString_ne("\nIntroduzca la nueva wikipedia:");
+        }else{
+            wiki = artist.getWikipedia();
+        }
+
+        return (new Artist(artist.getName(), bio, ins, tw, f, wiki, artist.getAlbums()));
+    }
+    
+    /**
      * Returns a column format string representation of the Artist. 
      * @return 
      */
@@ -174,5 +250,28 @@ public class Artist implements Serializable {
         sb.append("\n");
         
         return sb.toString(); 
+    }
+    
+    /**
+     * Returns a string representation of the Artist
+     * @return 
+     */
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%-30s", this.name)).append(" | ").append(String.format("%-300s", this.biography)).append(" | ");
+        sb.append(String.format("%-25s", this.instagram)).append(" | ").append(String.format("%-25s", this.twitter)).append(" | ");
+        sb.append(String.format("%-25s", this.facebook)).append(" | ").append(String.format("%-50s", this.wikipedia)).append(" | ");
+        
+        if(this.albums != null && !this.albums.isEmpty()){
+            sb.append(String.format("%-20s", this.albums.get(0)));
+            for(String a: this.albums.subList(1, this.albums.size())){
+                sb.append(" , ").append(String.format("%-20s", a));
+            }
+        }else{
+            sb.append(" ");
+        }
+        
+        return sb.toString();        
     }
 }

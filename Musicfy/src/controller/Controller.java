@@ -141,6 +141,7 @@ public class Controller implements Serializable{
         m.exportAlbumsHTMLTable(location);
     }
     
+    
     /*=================================================================================*/
     /*                                   ALBUM OPTION                                  */
     /*=================================================================================*/
@@ -179,6 +180,48 @@ public class Controller implements Serializable{
     public List<Album> checkAlbum(String title){
         return m.checkAlbum(title);
     }
+    
+    
+    
+    /*=================================================================================*/
+    /*                                  ARTIST OPTION                                  */
+    /*=================================================================================*/
+    /**
+     * Adds a new Artist.
+     * @param ar - Artist to add
+     * @return - True if the Artist was added successfully
+     */
+    public boolean registerArtist(Artist ar){
+        return m.registerArtist(ar);
+    }
+    
+    /**
+     * Removes a registered Artist.
+     * @param ar - Artist to be removed
+     * @return - true if it is removed successfully
+     */
+    public List<String> removeArtist(Artist ar){
+        return m.removeArtist(ar);
+    }
+    
+    /**
+     * Modifies an Artist.
+     * @param ar - Artist to modify
+     * @return - Modified Artist
+     */
+    public Artist modifyArtist(Artist ar){
+        return m.modifyArtist(ar);
+    }
+    
+    /**
+     * Returns a sorted list with the Albums of the Artist ar
+     * @param ar - Artist from where the albums are obtained
+     * @return - List of Albums of the Artist
+     */
+    public List<Album> getSortArtistAlbumsList(Artist ar){
+        return m.getSortArtistAlbumsList(ar);
+    }
+    
     
     /*=================================================================================*/
     /*                                 PLAYLIST OPTION                                 */

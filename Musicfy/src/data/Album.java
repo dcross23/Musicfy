@@ -276,6 +276,27 @@ public class Album implements Serializable{
         return sb.toString(); 
     }
 
+    /**
+     * Returns a string representation of the Album (excluding his Songs)
+     * @return 
+     */
+    public String toStringNoSongs(){
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append(String.format("%-40s", this.title)).append(" | ").append(String.format("%-5s", this.year)).append(" | ").append(String.format("%-15s", this.duration));
+        sb.append(" | ").append(String.format("%-13s", this.numSongs)).append(" | ").append(String.format("%-10s",this.type)).append(" | ");
+        
+        if(this.interpreters!=null && !this.interpreters.isEmpty()){
+            sb.append(String.format("%-40s", this.interpreters.get(0)));
+            for(String i: this.interpreters.subList(1,this.interpreters.size())){
+                sb.append(", ").append(String.format("%-40s", i));
+            }
+        }else{
+            sb.append(" ");
+        }        
+               
+        return sb.toString();
+    }
     
     /**
      * Returns a string representation of the Album (including his Songs)
