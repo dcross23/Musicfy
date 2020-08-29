@@ -3,6 +3,7 @@ package data;
 import com.coti.tools.Esdia;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -117,6 +118,52 @@ public class Song implements Serializable {
         }
         
         return song;
+    }
+    
+    /**
+     * Creates a Song with random values.
+     * Some of the parameters from the album data are needed to know the number 
+     * of songs to create for that album, its duration or its interpreters, all
+     * already generate randomly in randomValues Album method.
+     * @param interp
+     * @param nc
+     * @param albumDuration
+     * @return 
+     */
+     public static Song randomValues(List<String> interp, int nc, int albumDuration){
+        if(interp == null || nc<=0 || albumDuration <=0) return null;
+        
+        Random r = new Random();
+        Song so;
+        try{
+            Resources resources = new Resources();
+            List<String> songTitles = resources.getSongTitles();
+            String title;
+            if(songTitles!=null && !songTitles.isEmpty()){
+                title = songTitles.get(r.nextInt(songTitles.size()));
+            }else{
+                title = "error";
+            }
+            
+            //Random year between 1990 and 2020
+            //Año entre 1990 y 2019
+            int ye = r.nextInt(120)+1900;
+
+            //Song duration is being calculated with the album duration divided
+            // by the number of songs in the album, so each song will have the 
+            // same duration
+            int durCancion = albumDuration / nc;
+            int min = durCancion / 60;
+            int sec = durCancion % 60;  
+            String d = min+" min "+sec+" sec";
+                        
+            so = new Song(title,ye,d,interp);
+            
+        }catch(Exception e){
+            so=null;
+        }
+        
+        return so;
     }
     
     

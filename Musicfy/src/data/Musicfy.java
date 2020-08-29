@@ -7,9 +7,11 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 /**
  *
@@ -162,6 +164,77 @@ public class Musicfy implements Serializable {
         }   
         return true;
     }
+    
+    
+    
+    /*=================================================================================*/
+    /*                             RANDOM GENERATION OPTION                            */
+    /*=================================================================================*/
+    
+    /**
+     * Gives the user the option to generate random values for Musicfy.
+     * @throws java.io.IOException - If external files are not found
+     */
+    public void setRandomValues() throws IOException{
+        Random r = new Random(System.currentTimeMillis());
+        
+        List<Album> albu = new ArrayList<>();
+        List<Song> canc = new ArrayList<>();
+        List<Artist> art = new ArrayList<>();
+        List<PlayList> playl = new ArrayList<>();
+        
+        //1-20 albums (adding also his songs)
+        int nAlbumes = r.nextInt(20)+1;  
+        for(int i=0; i<nAlbumes; i++){
+            Album a = Album.randomValues();
+            if(a!=null){
+                albu.add(a);
+                canc.addAll(a.getSongs());
+            }
+        }
+        
+         
+        //Get the random albums interpreters and create a new list without
+        //  repeated names
+        List<String> allAlbumsInterpreters = new ArrayList<>();
+        if(!albu.isEmpty()){
+            for(Album alb: albu){
+                if(alb!=null){
+                    allAlbumsInterpreters.addAll(alb.getInterpreters());
+                }
+            }
+        }
+        
+        //To delete repeated names (Strings), it uses a HashSet which does not
+        // allow repeated String in it.
+        Set<String> noRepeatedInterpreters = new HashSet<>(allAlbumsInterpreters); 
+        allAlbumsInterpreters.clear();  
+        allAlbumsInterpreters.addAll(noRepeatedInterpreters);
+        
+        //Create the Artists with that list of no repeated names
+        Artist a;
+        if(!allAlbumsInterpreters.isEmpty()){
+            for(String i: allAlbumsInterpreters){
+                a = Artist.randomValues(i, albu);
+                if(a != null)
+                    art.add(a);
+            }
+        }
+        
+        //1-5 random PlayLists
+        int nPlayLists = r.nextInt(5)+1;
+        for(int i=0; i<nPlayLists; i++){
+            PlayList pl = PlayList.randomValues(canc);
+            if(pl!=null)
+                playl.add(pl);
+        }
+        
+        this.albums = albu;
+        this.artists = art;
+        this.songs = canc;
+        this.playLists = playl;
+    }
+    
     
     
     /*=================================================================================*/

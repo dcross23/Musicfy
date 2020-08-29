@@ -231,6 +231,64 @@ public class Artist implements Serializable {
     }
     
     /**
+     * Creates and Artist with random values.
+     * Some of the parameters from the album data are needed to know the name of the artist
+     * and the album list where the artist is registered, all already generate 
+     * randomly in randomValues Album method. 
+     * @param nombre
+     * @param albumList
+     * @return 
+     */
+    public static Artist randomValues(String nombre, List<Album> albumList){
+        Random r = new Random();
+        Artist ar;
+        try{
+            Resources resources = new Resources();
+            String n = nombre;
+            
+            String[][] redesSociales = resources.getSocialNetworks();
+            String b = "Buenas, soy "+nombre+" y esta es mi biografía";
+                    
+            String ins,tw,f,w;
+            if(redesSociales!=null && redesSociales.length!=0){
+                int aux = r.nextInt(redesSociales.length);
+                ins = redesSociales[aux][0];
+                tw = redesSociales[aux][1];
+                f = redesSociales[aux][2];
+                w = redesSociales[aux][3];
+            
+            }else{
+                ins = tw = f = w = "error";
+            }
+            
+            List<String> alb = new ArrayList<>(); 
+            List<String> interp;
+            
+            //Iterates throw the created random albums and if the name of one of the interpreters is equal to the name
+            // of this Artist, it adds the album to the Artist
+            if(albumList!=null && !albumList.isEmpty()){
+                for(Album a: albumList){
+                    interp = a.getInterpreters();
+                    for(String i : interp){
+                        if(i.compareTo(n) == 0){
+                            alb.add(a.getTitle());
+                        }
+                    }
+                }
+            }            
+            
+            ar = new Artist(n,b,ins,tw,f,w,alb);
+            
+        }catch(Exception e){
+            System.err.println("ERROR: no se ha podido crear el ejemplar de Artist: "+e);
+            ar = null;
+        }
+        
+        return ar;
+    }   
+    
+    
+    /**
      * Returns a column format string representation of the Artist. 
      * @return 
      */

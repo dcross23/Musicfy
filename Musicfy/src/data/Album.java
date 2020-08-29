@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -161,8 +162,7 @@ public class Album implements Serializable{
         
         return newAlbum;
     }
-    
-    
+        
     /**
      * Creates an Album asking the user for the data.
      * @return The new Album or null if there is an error
@@ -223,7 +223,6 @@ public class Album implements Serializable{
         return album;
     }
     
-    
     /**
      * Creates an Album by modifying another album given by the user.
      * @param album - Album to modify
@@ -251,6 +250,79 @@ public class Album implements Serializable{
         return (new Album(album.getTitle(), album.getInterpreters(), a, d, album.getNumSongs(), album.getType(), album.getSongs()));
     }
   
+    /**
+     * Creates an Album with random values.
+     * @return 
+     */
+    public static Album randomValues(){
+        Random r = new Random();
+        Album alb;
+        try{
+            Resources resources = new Resources();
+            //Titles from the titles file for the albums
+            List<String> resTitles = resources.getAlbumNames();
+            String tit;
+            if(resTitles!=null && !resTitles.isEmpty()){
+                tit = resTitles.get(r.nextInt(resTitles.size()));
+            }else{
+                tit="error";
+            }
+            
+            //Names from the name file for the interpreters (1-3 random artist without repeating)
+            List<String> resInterpreters = resources.getArtistNames();
+            List<String> interp = new ArrayList<>();
+            if(resInterpreters!=null && !resInterpreters.isEmpty()){
+                int numArtists = r.nextInt(4)+1; //Random numbers of artists (1-3)
+                int index;
+                for(int i=0; i<numArtists; i++){
+                    index = r.nextInt(resInterpreters.size());
+                    interp.add(resInterpreters.get(index));
+                    resInterpreters.remove(index);  //Removing from the list to avoid repetitions
+                }
+            }
+
+            //Random years between 1900 and 2029
+            int ye = r.nextInt(120)+1900;
+            
+            //Random duration between 5min and 59:59 min
+            //duracion entre 5min y 59 min 
+            int min = r.nextInt(54)+5;
+            int sec = r.nextInt(59)+1;                     
+            String d = min+" min "+sec+" sec"; 
+            int albumDuration = min*60 + sec; //For songs to now the total album duration
+            
+            //Random type, 50% for "album"(0) and 50% for "sencillo"(1)
+            boolean aux = r.nextBoolean();
+            String type;
+            int nc;
+            
+            if(aux){
+                type = "sencillo";
+                nc = 1;      
+            }else{
+                type = "álbum";
+                nc=r.nextInt(5)+2; //(2-6) songs for each album
+            }
+            
+            List<Song> songs= new ArrayList<>();
+            Song song;
+            for(int i=0; i<nc; i++){
+                song = Song.randomValues(interp, nc, albumDuration);
+                if(song != null)
+                    songs.add(song);
+            }            
+                        
+            alb = new Album(tit,interp,ye,d,nc,type,songs);
+            
+        }catch(Exception e){
+            System.err.println("ERROR: no se ha podido crear la instancia de Album");
+            System.err.println("Exception:"+e);
+            alb = null;   
+        }
+            
+        return alb;
+    }
+    
     
     /**
      * Returns a string representation of the Album representing and HTML Table Row.

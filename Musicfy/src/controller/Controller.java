@@ -67,7 +67,8 @@ public class Controller implements Serializable{
                 
             }catch(IOException | ClassNotFoundException e) {
                 System.err.println("ERROR: no se ha podido cargar el fichero binario");
-                System.err.println("Exception:" + e);
+                System.err.println("Exception "+e);
+                //Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, e);
                 m = new Musicfy(); 
                 musicfyReady = true;
                 return false;
@@ -93,7 +94,8 @@ public class Controller implements Serializable{
 
         }catch(IOException e) {
             System.err.println("[ERROR] No se ha podido guardar Musicfy");
-            System.err.println("Exception:"+e);
+            System.err.println("Exception "+e);
+            //Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, e);
             return false;
         }
 
@@ -117,6 +119,18 @@ public class Controller implements Serializable{
         }
         return m.importTextFiles(location);
     }
+    
+    /*=================================================================================*/
+    /*                             RANDOM GENERATION OPTION                            */
+    /*=================================================================================*/
+    /**
+     * Gives the user the option to generate random values for Musicfy.
+     * @throws java.io.IOException - If external files are not found
+     */
+    public void setRandomValues() throws IOException{
+        m.setRandomValues();
+    }
+    
  
     /*=================================================================================*/
     /*                                 ARCHIVES OPTION                                 */

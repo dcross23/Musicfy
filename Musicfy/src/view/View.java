@@ -7,6 +7,7 @@ import data.Artist;
 import data.PlayList;
 import data.Song;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -22,6 +23,20 @@ public class View implements Serializable {
      * Controller used to comunicate with Musicfy.
      */
     Controller controller = new Controller();
+    
+    
+    /**
+     * Loads random values for Musicfy when it cant load binary or text files.
+     * @return - True if the user generated random values
+     */
+    public boolean randomLoadingOption(){
+        if(Esdia.yesOrNo("¿Quieres cargar valores aleatorios para musicfy?")){
+            this.randomGenerationOption();
+            return true;
+            
+        }else 
+            return false;
+    }
     
     /*=================================================================================*/
     /*                                  BINARY FILE                                    */
@@ -74,17 +89,17 @@ public class View implements Serializable {
             System.out.println(menu);
             opc = Esdia.readString("Introduzca una opción", options);
             switch(opc){
-                case "1":  break;
+                case "1": randomGenerationOption(); break;
                 
-                case "2": archivesOption(); break;
+                case "2": archivesOption();         break;
                  
-                case "3": albumOption();    break;
+                case "3": albumOption();            break;
                 
-                case "4": artistOption();   break;
+                case "4": artistOption();           break;
                 
-                case "5": playListOption(); break;
+                case "5": playListOption();         break;
                 
-                case "6": songsOption();    break;
+                case "6": songsOption();            break;
                 
                 case "s": exit = Esdia.yesOrNo("¿Seguro que quiere salir del programa?");
                           break;
@@ -92,11 +107,26 @@ public class View implements Serializable {
         }while(!exit);
         System.out.println("\nFinalizando programa....");
     }
-    
+
     
     /*=================================================================================*/
     /*                                    OPTIONS                                      */
     /*=================================================================================*/
+    
+    /*=================    ARCHIVES OPTION     ==================*/
+    /**
+     * Gives the user the option to generate random values for Musicfy.
+     */
+    private void randomGenerationOption(){
+        try{
+            controller.setRandomValues();
+            System.out.println("\nValores aleatorios generados correctamente.\n");
+            
+        }catch(IOException e){
+            System.err.println("[ERROR] no se han podido generar valores aleatorios");
+            System.err.println("Exception:"+e);
+        }
+    }
     
     /*=================    ARCHIVES OPTION     ==================*/
     /**

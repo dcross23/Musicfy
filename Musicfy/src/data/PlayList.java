@@ -84,6 +84,50 @@ public class PlayList implements Serializable {
     }
     
     /**
+     * Creates a new PlayList with random values.
+     * To select songs, it needs the full song list already generated in 
+     * randomValues Album method and randomValues Song method.
+     * @param allSongs
+     * @return 
+     */
+    public static PlayList randomValues(List<Song> allSongs){
+        Random r = new Random();
+        
+        PlayList pl;
+        try{
+            Resources resources = new Resources();
+            List<String> playListsNames = resources.getPlayListNames();
+            String name;
+            if(playListsNames!=null && !playListsNames.isEmpty()){
+                name = playListsNames.get(r.nextInt(playListsNames.size()));
+            }else{
+                name = "error";
+            }
+            
+            //1-10 Songs in each playlist
+            int nCanc = r.nextInt(10)+1;
+            List<Song> songs = new ArrayList<>(); 
+            List<Song> totalSongs = new ArrayList(allSongs);
+            
+            if(totalSongs!=null && !totalSongs.isEmpty()){
+                int pos;
+                for(int i=0; i<nCanc; i++){
+                    pos = r.nextInt(totalSongs.size());
+                    songs.add(totalSongs.get(pos));
+                    totalSongs.remove(pos);
+                }
+            }
+            
+            pl = new PlayList(name,songs);
+            
+        }catch(Exception e){
+            pl=null;
+        }
+     
+        return pl;    
+    }
+    
+    /**
      * Returns a string representation of the PlayList (separates name and songs). 
      * @return 
      */
