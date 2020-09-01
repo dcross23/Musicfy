@@ -4,10 +4,13 @@
  (For more information clic [here](Practica_Final_19_20.pdf))
  
 GNU/Linux:
-![Musicfy on Linux](README_images/linux.png)
+
+![](README_images/linux.PNG)
+
 
 Windows:
-![Musicfy on Windows](README_images/windows.png)
+
+![](README_images/windows.PNG)
 
 
 ## Usage
