@@ -1,7 +1,7 @@
 # Musicfy
- Musicfy pretends to emulate an application to manage a data base from music reproduction via "streaming" company.
+ Musicfy pretends to emulate an application to manage a data base from a music reproduction via "streaming" company.
  Its a very simple terminal application that shows several menus to manage this data base.
- (For more information clic [here](Practica_Final_19_20.pdf))
+ (For more information click [here](Practica_Final_19_20.pdf))
  
 GNU/Linux:
 
